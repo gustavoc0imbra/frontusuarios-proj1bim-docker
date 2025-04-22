@@ -1,0 +1,6 @@
+services:
+  frontusuarios:
+    build: .
+    container_name: "frontusuarios"
+    ports:
+      - 80:80

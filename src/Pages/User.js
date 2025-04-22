@@ -1,11 +1,21 @@
 import { useEffect, useState } from "react";
 import { getUsersFromMongo, getUsersFromMysql } from "../composables/Users";
-import Swal from "sweetalert2";
-import { Accordion, Container, Table, TableBody, TableCell, TableHead, TableRow, ThemeProvider } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fab, Typography } from "@mui/material";
+import SimpleTable from "../components/SimpleTable";
+import { Add, ExpandMore } from "@mui/icons-material";
 
 export default function User() {
     const [mongoUsers, setMongoUsers] = useState([]);
     const [mysqlUsers, setMysqlUsers] = useState([]);
+    const [open, setOpen] = useState(false);
+
+    const openModal = () => {
+        setOpen(true);
+    };
+
+    const closeModal = () => {
+        setOpen(false);
+    }
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -19,53 +29,97 @@ export default function User() {
         fetchUsers();
     }, []);
 
-
     return (
         <>
             {
                 <Container>
-                    <Table aria-label="mongo's users table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>ID</TableCell>
-                                <TableCell>Nome</TableCell>
-                                <TableCell>Telefone</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {
-                                mongoUsers.map((user) => (
-                                    <TableRow>
-                                        <TableCell>{user.id}</TableCell>
-                                        <TableCell>{user.name}</TableCell>
-                                        <TableCell>{user.phoneNumber}</TableCell>
-                                    </TableRow>
-                                ))
-                            }
-                        </TableBody>
-                    </Table>
+                    <Accordion>
+                        <AccordionSummary
+                            expandIcon={<ExpandMore />}
+                            aria-controls="mongo-panel"
+                            id="mongo-header"
+                        >
+                            <Typography component="span">Tabela Mongo</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <SimpleTable
+                                ariaLabel="mongo's users table"
+                                columns={[
+                                    {
+                                        title: "ID",
+                                        key: "id"
+                                    },
+                                    {
+                                        title: "Nome",
+                                        key: "name"
+                                    },
+                                    {
+                                        title: "Telefone",
+                                        key: "phoneNumber"
+                                    },
+                                ]}
+                                data={mongoUsers}
+                            />
+                        </AccordionDetails>
+                    </Accordion>
+                    <Accordion>
+                        <AccordionSummary
+                            expandIcon={<ExpandMore />}
+                            aria-controls="mysql-panel"
+                            id="mysql-header"
+                        >
+                            <Typography component="span">Tabela MySQL</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <SimpleTable
+                                ariaLabel="mysql's users table"
+                                columns={[
+                                    {
+                                        title: "ID",
+                                        key: "id"
+                                    },
+                                    {
+                                        title: "Nome",
+                                        key: "name"
+                                    },
+                                    {
+                                        title: "Telefone",
+                                        key: "phoneNumber"
+                                    },
+                                ]}
+                                data={mysqlUsers}
+                            />
+                        </AccordionDetails>
+                    </Accordion>
 
-                    <Table aria-label="mysql's users table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>ID</TableCell>
-                                <TableCell>Nome</TableCell>
-                                <TableCell>Telefone</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {
-                                mysqlUsers.map((user) => (
-                                    <TableRow>
-                                        <TableCell>{user.id}</TableCell>
-                                        <TableCell>{user.name}</TableCell>
-                                        <TableCell>{user.phoneNumber}</TableCell>
-                                    </TableRow>
-                                ))
-                            }
-                        </TableBody>
-                    </Table>
-                </Container>                
+                    <Fab
+                        color="primary"
+                        sx={{
+                            position: "fixed",
+                            bottom: 16,
+                            right: 16
+                        }}
+                        onClick={openModal}
+                    >
+                        <Add />
+                    </Fab>
+
+                    <Dialog
+                        open={open}
+                        onClose={closeModal}
+                    >
+                        <DialogTitle>Adicionar Usuário</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText></DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={closeModal} color="error" variant="contained">Cancelar</Button>
+                            <Button color="success" variant="contained" >Salvar</Button>
+                        </DialogActions>
+                    </Dialog>
+                </Container>
+
+
             }
         </>
     );

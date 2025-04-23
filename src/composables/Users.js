@@ -14,7 +14,9 @@ export async function useUsersFromBoth() {
             title: "Erro ao carregar usuários!",
             icon: "error",
             timer: 2000,
-            timerProgressBar: true
+            timerProgressBar: true,
+            theme: "dark",
+            confirmButtonColor: "#2196f3"
         });
         return null;
     }
@@ -32,7 +34,9 @@ export async function getUsersFromMongo() {
             title: "Erro ao carregar usuários!",
             icon: "error",
             timer: 2000,
-            timerProgressBar: true
+            timerProgressBar: true,
+            theme: "dark",
+            confirmButtonColor: "#2196f3"
         });
         return null;
     }
@@ -50,7 +54,9 @@ export async function getUsersFromMysql() {
             title: "Erro ao carregar usuários!",
             icon: "error",
             timer: 2000,
-            timerProgressBar: true
+            timerProgressBar: true,
+            theme: "dark",
+            confirmButtonColor: "#2196f3"
         });
         return null;
     }
@@ -75,7 +81,9 @@ export async function saveUserMongo(user) {
             title: "Erro ao salvar usuário no MongoDb!",
             icon: "error",
             timer: 2000,
-            timerProgressBar: true
+            timerProgressBar: true,
+            theme: "dark",
+            confirmButtonColor: "#2196f3"
         });
 
         return;
@@ -101,7 +109,9 @@ export async function saveUserMysql(user) {
             title: "Erro ao salvar usuário no MySQL!",
             icon: "error",
             timer: 2000,
-            timerProgressBar: true
+            timerProgressBar: true,
+            theme: "dark",
+            confirmButtonColor: "#2196f3"
         });
 
         return;

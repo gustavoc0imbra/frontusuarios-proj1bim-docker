@@ -1,20 +1,6 @@
 import { useEffect, useState } from "react";
-import { getUsersFromMongo, getUsersFromMysql } from "../composables/Users";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Button,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Fab,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { getUsersFromMongo, getUsersFromMysql, saveUserMongo, saveUserMysql } from "../composables/Users";
+import { Accordion, AccordionDetails, AccordionSummary, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fab, TextField, Typography } from "@mui/material";
 import SimpleTable from "../components/SimpleTable";
 import { Add, ExpandMore } from "@mui/icons-material";
 import Swal from "sweetalert2";
@@ -23,10 +9,17 @@ export default function User() {
   const [mongoUsers, setMongoUsers] = useState([]);
   const [mysqlUsers, setMysqlUsers] = useState([]);
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [user, setUser] = useState({name: "", phoneNumber: ""});
 
-  const openModal = () => setOpen(true);
+  const resetUsrFields = () => {
+    setUser({...user, name: "", phoneNumber: ""});
+  };
+
+  const openModal = () => {
+    resetUsrFields();
+    setOpen(true);
+  };
+
   const closeModal = () => setOpen(false);
 
   const fetchUsers = async () => {
@@ -40,33 +33,31 @@ export default function User() {
   }, []);
 
   const handleSave = async () => {
-    if (!name || !phoneNumber) {
-      Swal.fire("Preencha todos os campos.", "", "warning");
+    if (!user.name || !user.phoneNumber) {
+      Swal.fire({
+        title: "Preencha todos os campos.",
+        icon: "warning"
+      });
       return;
     }
 
-    try {
-      await Promise.all([
-        fetch("http://localhost:8080/api/v0/users", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, phoneNumber }),
-        }),
-        fetch("http://localhost:8081/api/v0/users", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, phoneNumber }),
-        }),
-      ]);
+    const [mongoUser, mysqlUser] = await Promise.all([saveUserMongo(user), saveUserMysql(user)]);
 
-      Swal.fire("Usuário salvo com sucesso!", "", "success");
-      closeModal();
-      setName("");
-      setPhoneNumber("");
-      fetchUsers();
-    } catch (error) {
-      Swal.fire("Erro ao salvar usuário.", "", "error");
-    }
+    setMongoUsers([...mongoUsers, mongoUser]);
+    setMysqlUsers([...mysqlUsers, mysqlUser]);
+
+    resetUsrFields();
+
+    Swal.fire({
+      title: "Usuário salvo com sucesso!",
+      html: `ID no <b>MongoDB</b>: ${mongoUser.id}<br>ID no <b>MySQL</b>: ${mysqlUser.id}<br>Consulte as listas para verificar a persistência!`,
+      icon: "success",
+      showConfirmButton: true
+    }).then((result) => {
+      if(result.isConfirmed) {
+        closeModal();
+      }
+    });
   };
 
   return (
@@ -131,17 +122,17 @@ export default function User() {
             type="text"
             fullWidth
             variant="standard"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={user.name}
+            onChange={(e) => setUser({...user, name: e.target.value})}
           />
           <TextField
             margin="dense"
             label="Telefone"
-            type="text"
+            type="number"
             fullWidth
             variant="standard"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            value={user.phoneNumber}
+            onChange={(e) => setUser({...user, phoneNumber: e.target.value})}
           />
         </DialogContent>
         <DialogActions>

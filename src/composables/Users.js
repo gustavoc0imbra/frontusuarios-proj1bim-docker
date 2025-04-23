@@ -59,3 +59,55 @@ export async function getUsersFromMysql() {
 
     return data;
 }
+
+export async function saveUserMongo(user) {
+    const response = await fetch(MONGO_API_URL, {
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify(user)
+    });
+
+    if(!response.ok) {
+        Swal.fire({
+            title: "Erro ao salvar usuário no MongoDb!",
+            icon: "error",
+            timer: 2000,
+            timerProgressBar: true
+        });
+
+        return;
+    }
+
+    const data = await response.json();
+
+    return data;
+}
+
+export async function saveUserMysql(user) {
+    const response = await fetch(MYSQL_API_URL, {
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify(user)
+    });
+
+    if(!response.ok) {
+        Swal.fire({
+            title: "Erro ao salvar usuário no MySQL!",
+            icon: "error",
+            timer: 2000,
+            timerProgressBar: true
+        });
+
+        return;
+    }
+
+    const data = await response.json();
+
+    return data;
+}

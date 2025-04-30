@@ -2,6 +2,9 @@
 Um repositório que faz parte do conjunto entre outros 2 repositórios, que são APIs que salvam o dado de diferentes maneiras.
 Neste projeto é realizado a exibição e salvamento dos dados que as aplicações proveem. Uma é responsável por exibir os dados que salvos em coleções no MongoDB e a outra dados salvos na tabela MySQL.
 
+## Arquitetura Projeto:
+![ArqProjeto](https://github.com/user-attachments/assets/6ad82a32-39cb-4194-91e6-c61104a21a0c)
+
 ## Projetos Relacionados:
 - API que persiste o dado no MongoDB 🍃: [API MongoDB](https://github.com/gustavoc0imbra/API-Usuarios-Mongo-docker-1bim)
 - API que persiste o dado no MySQL 🐬: [API MySQL](https://github.com/gustavoc0imbra/API-Usuarios-Mysql-docker-1bim)
